@@ -13,7 +13,7 @@ class InputProcessing:
         # The calculation operations in order
         self.operations = list()
 
-    def manage_input(type, id):
+    def manage_input(self, type, id):
         if type == Type.NUMBER:
             compose_number(id)
         elif type == Type.OPERATION:
@@ -22,7 +22,11 @@ class InputProcessing:
     def compose_number(number):
         self.current_number += number
 
-    def compose_operation(id):
+    def compose_operation(self, id):
         self.numbers.append(int(self.current_number))
         self.current_number = ""
         self.operations.append(Operation(id))
+
+    # USED FOR TESTING
+    def TEST(self, x):
+        print(x)

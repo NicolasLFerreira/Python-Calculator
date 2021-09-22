@@ -13,8 +13,11 @@ from Misc.Signs import *
 # Main class for TKinter object generation
 class Application(Frame):
     # inprocessing responds to liskov substitution SOLID principle. Application() will make method calls when input signals are sent
-    def __init__(self, master=None, inprocessing=None):
+    def __init__(self, master=None, inprocessing=None, root=None):
         Frame.__init__(self, master)
+
+        # Defines the root of the program
+        self.root = root
 
         # Dictionaries for storing the TKinter button objects instances
         self.numbers = {}
@@ -22,8 +25,8 @@ class Application(Frame):
         self.functionalities = {}
 
         # Dictionaries for storing the button's symbols.
-        self.func_sign = functionality_sign()
-        self.oper_sign = operation_sign()
+        self.functionality_sign = functionality_sign()
+        self.operation_sign = operation_sign()
         
 
         # Size parameters. Change for resizing each element of the application.
@@ -33,7 +36,7 @@ class Application(Frame):
         self.font_base = 10
 
         # Number manager
-        nm = inprocessing
+        self.nm = inprocessing
 
         # Calls the generation methods
         self.generate_elements()
@@ -64,7 +67,7 @@ class Application(Frame):
         self.button_functionality(3, lambda x: self.input.delete(0, len(self.input.get())), 4, 4)
 
         # Input.
-        self.input = Entry(root, font=("Helvetic", int(self.font_base*self.scale_factor), "bold"), width=int(self.width_base*self.scale_factor*5))
+        self.input = Entry(self.root, font=("Helvetic", int(self.font_base*self.scale_factor), "bold"), width=int(self.width_base*self.scale_factor*5))
         self.input.grid(row=0, columnspan=5)
         
     ####################
@@ -80,8 +83,8 @@ class Application(Frame):
     # - The column
     def base_button(self, index, type, text, callback, frow, fcolumn):
         id = (index), (type)
-        btn = Button(root)
-        btn["text"] = text
+        btn = Button(self.root)
+        btn["text"] = text 
         btn["command"] = lambda: callback(id)
 
         # The scale factor of the button. This is used in order to change its size and that of its contents.
@@ -94,17 +97,17 @@ class Application(Frame):
 
     # For numeric buttons
     def button_number(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.NUMBER, str(id), lambda id: self.number_build(id), frow, fcolumn)
+        btn = self.base_button(id, Type.NUMBER, str(id), lambda id: self.nm.TEST(id), frow, fcolumn)
         self.numbers[id] = btn
     
     # For operation buttons
     def button_operations(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.OPERATION, self.operation_sign[Operation(id)], lambda id: self.number_build(self.operation_sign[Operation(id)]), frow, fcolumn)
+        btn = self.base_button(id, Type.OPERATION, self.operation_sign[Operation(id)], lambda id: self.nm.TEST(id), frow, fcolumn)
         self.operations[id] = btn
 
     # For functionality buttons. E.g. equals or delete
     def button_functionality(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.FUNCTIONALITY, func_sign[Operation(id)], lambda id: callback(id), frow, fcolumn)
+        btn = self.base_button(id, Type.FUNCTIONALITY, self.functionality_sign[Operation(id)], lambda id: callback(id), frow, fcolumn)
         self.functionalities[id] = btn
 
     # Method which calculates a position for which the button will be based on given parameters.

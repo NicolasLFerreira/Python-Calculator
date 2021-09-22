@@ -12,7 +12,7 @@ root = Tk()
 # Main function. Assembles the code together
 def main():
     inprocessing = InputProcessing()
-    app = Application(None, inprocessing)
+    app = Application(None, inprocessing, root)
     app.master.title("Calc-o-Lator")
     app.mainloop()
 
