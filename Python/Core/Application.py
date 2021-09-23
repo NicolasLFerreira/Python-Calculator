@@ -3,7 +3,7 @@ from tkinter import ttk
 import tkinter as tk
 import math
 
-from Calculation.CalculationComponent import CalculationComponent as CalcComponent
+from Core.Calculation.CalculationComponent import CalculationComponent as CalcComponent
 from Enums.Type import Type
 from Enums.Operation import Operation
 from Enums.Functionality import Functionality
@@ -28,7 +28,7 @@ class Application(Frame):
         self.functionality_sign = functionality_sign()
         self.operation_sign = operation_sign()
         
-
+        a = Type.FUNCTIONALITY
         # Size parameters. Change for resizing each element of the application.
         self.scale_factor = 2
         self.width_base = 3

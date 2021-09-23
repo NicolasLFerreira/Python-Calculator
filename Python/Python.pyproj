@@ -25,7 +25,10 @@
     <Compile Include="CalcOLator.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Calculation\CalculationComponent.py">
+    <Compile Include="Core\Calculation\Calculation.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Calculation\CalculationComponent.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Application.py">
@@ -47,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
-    <Folder Include="Calculation\" />
+    <Folder Include="Core\Calculation\" />
     <Folder Include="Misc\" />
     <Folder Include="Core\" />
   </ItemGroup>
