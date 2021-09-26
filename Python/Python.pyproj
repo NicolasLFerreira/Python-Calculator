@@ -28,17 +28,11 @@
     <Compile Include="Core\Calculation\Calculation.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Calculation\CalculationComponent.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\Application.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\InputProcessing.py" />
     <Compile Include="Enums\Functionality.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Enums\Type.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Enums\Operation.py">

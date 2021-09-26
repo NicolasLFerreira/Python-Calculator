@@ -1,3 +1,5 @@
+from Enums.Functionality import Functionality
+from Enums.Operation import Operation
 
 # The class where all the calculation magic happens.
 # There are a few concepts that defines how this works. 
@@ -15,7 +17,7 @@ class Calculation:
 		self.calc_list = []
 
 		# The current number being inputted by the user
-		self.current_number
+		self.current_number = []
 
 		# The last operation inputted by the user. Default is ADDITION because ''
 		self.last_operation

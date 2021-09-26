@@ -4,3 +4,6 @@ from queue import *
 class InputProcessing:
     def __init__(self):
         self.calculation = Queue()
+
+    def TEST(self, a, b):
+        print(a)

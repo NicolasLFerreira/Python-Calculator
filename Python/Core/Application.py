@@ -3,8 +3,6 @@ from tkinter import ttk
 import tkinter as tk
 import math
 
-from Core.Calculation.CalculationComponent import CalculationComponent as CalcComponent
-from Enums.Type import Type
 from Enums.Operation import Operation
 from Enums.Functionality import Functionality
 
@@ -28,7 +26,7 @@ class Application(Frame):
         self.functionality_sign = functionality_sign()
         self.operation_sign = operation_sign()
         
-        a = Type.FUNCTIONALITY
+
         # Size parameters. Change for resizing each element of the application.
         self.scale_factor = 2
         self.width_base = 3
@@ -81,8 +79,8 @@ class Application(Frame):
     # - A text which will be printed in the screen
     # - The row
     # - The column
-    def base_button(self, index, type, text, callback, frow, fcolumn):
-        id = (index), (type)
+    def base_button(self, index, text, callback, frow, fcolumn):
+        id = (index)
         btn = Button(self.root)
         btn["text"] = text 
         btn["command"] = lambda: callback(id)
@@ -97,19 +95,19 @@ class Application(Frame):
 
     # For numeric buttons
     def button_number(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.NUMBER, str(id), lambda id: self.nm.TEST(id), frow, fcolumn)
+        btn = self.base_button(id, str(id), lambda id: self.nm.TEST(id, id), frow, fcolumn)
         self.numbers[id] = btn
     
     # For operation buttons
     def button_operations(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.OPERATION, self.operation_sign[Operation(id)], lambda id: self.nm.TEST(id), frow, fcolumn)
+        btn = self.base_button(id, self.operation_sign[Operation(id)], lambda id: self.nm.TEST(id, id), frow, fcolumn)
         self.operations[id] = btn
 
     # For functionality buttons. E.g. equals or delete
     def button_functionality(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, Type.FUNCTIONALITY, self.functionality_sign[Operation(id)], lambda id: callback(id), frow, fcolumn)
+        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: print(self.functionality_sign[Operation(id)]), frow, fcolumn)
         self.functionalities[id] = btn
 
     # Method which calculates a position for which the button will be based on given parameters.
-    def formula(self, id, factor, isRow, fix = 0):
-        return fix + math.floor(abs(id - 1) / factor) if isRow else fix + (id - 1) % factor
+    def formula(self, id, factor, isRow = True, fix = 0):
+        return 4 - (fix + math.floor(abs(id - 1) / factor)) if isRow else fix + (id - 1) % factor

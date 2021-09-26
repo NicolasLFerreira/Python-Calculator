@@ -19,5 +19,6 @@ def functionality_sign():
     dict[Functionality.EQUALS] = '='
     dict[Functionality.DELETE] = 'del'
     dict[Functionality.CLEAR] = 'clr'
+    dict[Functionality.DEC] = '.'
 
     return dict

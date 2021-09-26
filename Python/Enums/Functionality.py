@@ -6,3 +6,4 @@ class Functionality(enum.IntEnum):
     EQUALS = 1
     DELETE = 2
     CLEAR = 3
+    DEC = 4
