@@ -5,12 +5,14 @@ import math
 
 from Enums.Operation import Operation
 from Enums.Functionality import Functionality
+from Enums.Type import Type
 
 from Misc.Signs import *
 
 # Main class for TKinter object generation
 class Application(Frame):
-    # inprocessing responds to liskov substitution SOLID principle. Application() will make method calls when input signals are sent
+    # inprocessing responds to liskov substitution SOLID principle.
+    # Application() will make method calls when input signals are sent
     def __init__(self, master=None, inprocessing=None, root=None):
         Frame.__init__(self, master)
 
@@ -27,21 +29,22 @@ class Application(Frame):
         self.operation_sign = operation_sign()
         
 
-        # Size parameters. Change for resizing each element of the application.
+        # Size parameters.  Change for resizing each element of the
+        # application.
         self.scale_factor = 2
         self.width_base = 3
         self.height_base = 1
         self.font_base = 10
 
         # Number manager
-        self.nm = inprocessing
+        self.call = inprocessing
 
         # Calls the generation methods
         self.generate_elements()
 
     ####################
     # Element Creation #
-    ####################
+    ####################    	
 
     def generate_elements(self):
         # Number buttons.
@@ -60,19 +63,24 @@ class Application(Frame):
             self.button_operations(id, lambda oper: print(oper), frow, fcolumn)
 
         # Functionality buttons
-        self.button_functionality(1, lambda oper: print(oper), 4, 2)
-        self.button_functionality(2, lambda x: self.input.delete(len(self.input.get()) - 1, len(self.input.get())), 4, 3)
-        self.button_functionality(3, lambda x: self.input.delete(0, len(self.input.get())), 4, 4)
 
+        self.button_functionality(Functionality.DEC, lambda oper: print(oper), 4,0)
+        self.button_functionality(Functionality.EQUALS, lambda oper: print(oper), 4, 2)
+        self.button_functionality(Functionality.DELETE, lambda oper: print(oper), 4, 3)
+        self.button_functionality(Functionality.CLEAR, lambda oper: print(oper), 4, 4)
+        
         # Input.
-        self.input = Entry(self.root, font=("Helvetic", int(self.font_base*self.scale_factor), "bold"), width=int(self.width_base*self.scale_factor*5))
+        self.input = Entry(self.root, font=("Helvetic", int(self.font_base * self.scale_factor), "bold"), width=int(self.width_base * self.scale_factor * 5))
         self.input.grid(row=0, columnspan=5)
         
+
+
     ####################
     # Tkinter Elements #
     ####################
 
-    # Base button method. This serves in order to keep some pattern on how every type of button will behave
+    # Base button method.  This serves in order to keep some pattern on how
+    # every type of button will behave
     # The parameters are:
     # - An ID for it to be distinguished
     # - A type enum Type
@@ -85,29 +93,31 @@ class Application(Frame):
         btn["text"] = text 
         btn["command"] = lambda: callback(id)
 
-        # The scale factor of the button. This is used in order to change its size and that of its contents.
-        btn["height"] = int(self.height_base*self.scale_factor)
-        btn["width"] = int(self.width_base*self.scale_factor)
+        # The scale factor of the button.  This is used in order to change its
+        # size and that of its contents.
+        btn["height"] = int(self.height_base * self.scale_factor)
+        btn["width"] = int(self.width_base * self.scale_factor)
 
-        btn.config(font=("Courier", int(self.font_base*self.scale_factor), "bold"))
+        btn.config(font=("Courier", int(self.font_base * self.scale_factor), "bold"))
         btn.grid(row=frow, column=fcolumn)
         return btn
 
     # For numeric buttons
     def button_number(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, str(id), lambda id: self.nm.TEST(id, id), frow, fcolumn)
+        btn = self.base_button(id, str(id), lambda id: self.call.caller(Type.NUMBER, id), frow, fcolumn)
         self.numbers[id] = btn
     
     # For operation buttons
     def button_operations(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, self.operation_sign[Operation(id)], lambda id: self.nm.TEST(id, id), frow, fcolumn)
+        btn = self.base_button(id, self.operation_sign[Operation(id)], lambda id: self.call.caller(Type.OPERATION, id), frow, fcolumn)
         self.operations[id] = btn
 
-    # For functionality buttons. E.g. equals or delete
+    # For functionality buttons.  E.g.  equals or delete
     def button_functionality(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: print(self.functionality_sign[Operation(id)]), frow, fcolumn)
+        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: self.call.caller(Type.FUNCTIONALITY, id), frow, fcolumn)
         self.functionalities[id] = btn
 
-    # Method which calculates a position for which the button will be based on given parameters.
-    def formula(self, id, factor, isRow = True, fix = 0):
+    # Method which calculates a position for which the button will be based on
+    # given parameters.
+    def formula(self, id, factor, isRow=True, fix=0):
         return 4 - (fix + math.floor(abs(id - 1) / factor)) if isRow else fix + (id - 1) % factor
