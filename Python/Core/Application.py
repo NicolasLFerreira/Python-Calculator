@@ -36,6 +36,10 @@ class Application(Frame):
         self.height_base = 1
         self.font_base = 10
 
+        # Label
+        self.text = tk.StringVar()
+        self.label = None
+
         # Number manager
         self.call = inprocessing
 
@@ -65,13 +69,14 @@ class Application(Frame):
         # Functionality buttons
 
         self.button_functionality(Functionality.DEC, lambda oper: print(oper), 4,0)
-        self.button_functionality(Functionality.EQUALS, lambda oper: print(oper), 4, 2)
+        self.button_functionality(Functionality.EQUALS, lambda oper: print(oper), 0, 4)
         self.button_functionality(Functionality.DELETE, lambda oper: print(oper), 4, 3)
         self.button_functionality(Functionality.CLEAR, lambda oper: print(oper), 4, 4)
+        self.button_functionality(Functionality.INVERT, lambda oper: print(oper), 4, 2)
         
         # Input.
-        self.input = Entry(self.root, font=("Helvetic", int(self.font_base * self.scale_factor), "bold"), width=int(self.width_base * self.scale_factor * 5))
-        self.input.grid(row=0, columnspan=5)
+        self.label = Label(self.root, textvariable=self.text, font=("Helvetic", int(self.font_base * self.scale_factor), "bold"), width=int(self.width_base * self.scale_factor * 4))
+        self.label.grid(row=0, columnspan=4)
         
 
 
@@ -114,8 +119,11 @@ class Application(Frame):
 
     # For functionality buttons.  E.g.  equals or delete
     def button_functionality(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: self.call.caller(Type.FUNCTIONALITY, id), frow, fcolumn)
+        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: self.change_text(self.call.caller(Type.FUNCTIONALITY, id)), frow, fcolumn)
         self.functionalities[id] = btn
+
+    def change_text(self, result):
+        self.text.set(str(result))
 
     # Method which calculates a position for which the button will be based on
     # given parameters.

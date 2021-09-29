@@ -8,4 +8,4 @@ class Operation(enum.IntEnum):
     MULT = 3
     DIVI = 4
     POW = 5
-    SQRT = 6
+    RAD = 6

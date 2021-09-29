@@ -6,10 +6,10 @@ def operation_sign():
 
     dict[Operation.ADD] = '+'
     dict[Operation.SUB] = '-'
-    dict[Operation.MULT] = '*'
+    dict[Operation.MULT] = '×'
     dict[Operation.DIVI] = '/'
     dict[Operation.POW] = '^'
-    dict[Operation.SQRT] = '√'
+    dict[Operation.RAD] = '√'
 
     return dict
 
@@ -20,5 +20,6 @@ def functionality_sign():
     dict[Functionality.DELETE] = 'del'
     dict[Functionality.CLEAR] = 'clr'
     dict[Functionality.DEC] = '.'
+    dict[Functionality.INVERT] = '-/+'
 
     return dict
