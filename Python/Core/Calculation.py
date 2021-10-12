@@ -4,16 +4,14 @@ from Enums.Type import Type
 from Misc.Signs import *
 from math import *
 
-# The class where all the calculation magic happens.
-# There are a few concepts that defines how this works.
-# The way the calculation works is:
-# - The user starts clicking the numeric buttons, which call events which then
-# operate all the logic,
-#	and the current number being inputted is stored in self.current_number.
-# - When the user clicks an operation or the equals functionality button, the
-# program wraps up the number,
-#   adds to the calc_list the inputted operation, and then initializes a new
-#   object for the self.building_number.#
+# All the calculation magic happens here
+# List of operations that can be performed: 
+# - Summation
+# - Subtraction
+# - Multiplication
+# - Division
+# - Exponentiation
+# - Radiation #
 class Calculation:
 	""" Manages the object for the calculation """
 	def __init__(self):
@@ -40,16 +38,20 @@ class Calculation:
 			print("func")
 			return self.functionality_call(id)
 
-	# Method for numeric button call
+	# Adds the user input to the self.building_number as a string for easy management
 	def number_call(self, id):
 		self.building_number += str(id)
 		self.allow_operation = True
 
-	# Method for operation button call
+	# Manages operations
 	def operation_call(self, id):
+		
+		# Wraps the user input
 		self.wrapper()
+		
 		self.allow_operation = False
 
+		# Calls the respective operation method
 		if (self.current_operation == Operation.ADD):
 			self.sum()
 		elif (self.current_operation == Operation.SUB):
