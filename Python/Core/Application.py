@@ -85,7 +85,7 @@ class Application(Frame):
     ####################
 
     # Base button method.  This serves in order to keep some pattern on how
-    # every type of button will behave
+    # every type of button will behave              
     # The parameters are:
     # - An ID for it to be distinguished
     # - A type enum Type
