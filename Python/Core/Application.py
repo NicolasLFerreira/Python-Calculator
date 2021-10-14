@@ -50,31 +50,32 @@ class Application(Frame):
     # Element Creation #
     ####################    	
 
+    # Here is where all the buttons and other TKinter elements are created
     def generate_elements(self):
-        # Number buttons.
+        # Number buttons
         for id in range(1, 10):
             frow = self.formula(id, 3, True, 1)
             fcolumn = self.formula(id, 3, False)
-            self.button_number(id, lambda num: print(num), frow, fcolumn)
+            self.button_number(id, frow, fcolumn)
         
-        self.button_number(0, lambda num: print(num), 4, 1)
+        self.button_number(0, 4, 1)
 
-        # Operation Buttons.
+        # Operation Buttons
         for id in range(1, 7):
             frow = self.formula(id, 2, True, 1)
             fcolumn = self.formula(id, 2, False, 3)
             print(id, self.operation_sign[id], frow, fcolumn)
-            self.button_operations(id, lambda oper: print(oper), frow, fcolumn)
+            self.button_operations(id, frow, fcolumn)
 
         # Functionality buttons
 
-        self.button_functionality(Functionality.DEC, lambda oper: print(oper), 4,0)
-        self.button_functionality(Functionality.EQUALS, lambda oper: print(oper), 0, 4)
-        self.button_functionality(Functionality.DELETE, lambda oper: print(oper), 4, 3)
-        self.button_functionality(Functionality.CLEAR, lambda oper: print(oper), 4, 4)
-        self.button_functionality(Functionality.INVERT, lambda oper: print(oper), 4, 2)
+        self.button_functionality(Functionality.DEC, 4,0)
+        self.button_functionality(Functionality.EQUALS, 0, 4)
+        self.button_functionality(Functionality.DELETE, 4, 3)
+        self.button_functionality(Functionality.CLEAR, 4, 4)
+        self.button_functionality(Functionality.INVERT, 4, 2)
         
-        # Input.
+        # Input
         self.label = Label(self.root, textvariable=self.text, font=("Helvetic", int(self.font_base * self.scale_factor), "bold"), width=int(self.width_base * self.scale_factor * 4))
         self.label.grid(row=0, columnspan=4)
         
@@ -88,17 +89,16 @@ class Application(Frame):
     # every type of button will behave              
     # The parameters are:
     # - An ID for it to be distinguished
-    # - A type enum Type
     # - A text which will be printed in the screen
+    # - A type enum Type
     # - The row
     # - The column
-    def base_button(self, index, text, callback, frow, fcolumn):
-        id = (index)
+    def base_button(self, id, text, type, frow, fcolumn):
         btn = Button(self.root)
         btn["text"] = text 
-        btn["command"] = lambda: callback(id)
+        btn["command"] = lambda: self.button_call(type, id)
 
-        # The scale factor of the button.  This is used in order to change its
+        # The scale factor of the button. This is used in order to change its
         # size and that of its contents.
         btn["height"] = int(self.height_base * self.scale_factor)
         btn["width"] = int(self.width_base * self.scale_factor)
@@ -108,22 +108,26 @@ class Application(Frame):
         return btn
 
     # For numeric buttons
-    def button_number(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, str(id), lambda id: self.call.caller(Type.NUMBER, id), frow, fcolumn)
+    def button_number(self, id, frow, fcolumn):
+        btn = self.base_button(id, str(id), Type.NUMBER, frow, fcolumn)
         self.numbers[id] = btn
     
     # For operation buttons
-    def button_operations(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, self.operation_sign[Operation(id)], lambda id: self.call.caller(Type.OPERATION, id), frow, fcolumn)
+    def button_operations(self, id, frow, fcolumn):
+        btn = self.base_button(id, self.operation_sign[Operation(id)], Type.OPERATION, frow, fcolumn)
         self.operations[id] = btn
 
-    # For functionality buttons.  E.g.  equals or delete
-    def button_functionality(self, id, callback, frow, fcolumn):
-        btn = self.base_button(id, self.functionality_sign[Operation(id)], lambda id: self.change_text(self.call.caller(Type.FUNCTIONALITY, id)), frow, fcolumn)
+    # For functionality buttons.  E.g.  equals, delete, clear, etc...
+    def button_functionality(self, id, frow, fcolumn):
+        btn = self.base_button(id, self.functionality_sign[Operation(id)], Type.FUNCTIONALITY, frow, fcolumn)
         self.functionalities[id] = btn
 
-    def change_text(self, result):
-        self.text.set(str(result))
+    def button_call(self, type, id):
+        output = self.call.caller(type, id)
+        self.change_text(output)
+
+    def change_text(self, output):
+        self.text.set(str(output))
 
     # Method which calculates a position for which the button will be based on
     # given parameters.

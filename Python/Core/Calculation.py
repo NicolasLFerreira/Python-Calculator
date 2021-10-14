@@ -23,7 +23,6 @@ class Calculation:
 
 		self.current_operation = Operation.ADD
 		self.allow_operation = False
-		
 
 	def caller(self, type, id):
 
@@ -37,6 +36,8 @@ class Calculation:
 		else:
 			print("func")
 			return self.functionality_call(id)
+
+		return self.output_update()
 
 	# Adds the user input to the self.building_number as a string for easy management
 	def number_call(self, id):
@@ -72,7 +73,6 @@ class Calculation:
 		self.operation_call(1)
 		result = self.result
 		self.reset()
-		return result
 	
 	# Finishes the building number and sets the current number as a float value.
 	def wrapper(self):
@@ -84,9 +84,9 @@ class Calculation:
 		self.result = 0.0
 		self.current_number = 0.0
 		self.building_number = ""
-		print("RESET")
-
 		self.current_operation = Operation.ADD
+
+		print("RESET")
 	
 	# Operations
 	
@@ -107,3 +107,6 @@ class Calculation:
 
 	def rad(self):
 		self.result **= (1 / self.current_number)
+
+	def output_update(self):
+		return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + str(self.building_number))
