@@ -19,6 +19,8 @@ class Application(Frame):
         # Defines the root of the program
         self.root = root
 
+        self.root.resizable(width = False, height = False)
+
         # Dictionaries for storing the TKinter button objects instances
         self.numbers = {}
         self.operations = {}
@@ -122,10 +124,12 @@ class Application(Frame):
         btn = self.base_button(id, self.functionality_sign[Operation(id)], Type.FUNCTIONALITY, frow, fcolumn)
         self.functionalities[id] = btn
 
+    # Calls the calculation caller method and calls the output display function
     def button_call(self, type, id):
         output = self.call.caller(type, id)
         self.change_text(output)
 
+    # Sets the display
     def change_text(self, output):
         self.text.set(str(output))
 

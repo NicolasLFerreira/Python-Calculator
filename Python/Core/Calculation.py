@@ -18,12 +18,13 @@ class Calculation:
 		
 		self.result = 0.0
 		self.current_number = 0.0
-		self.building_number = ""
+		self.building_number = []
 		self.expression = ""
 
 		self.current_operation = Operation.ADD
 		self.allow_operation = False
 
+	# Externals functions call this one
 	def caller(self, type, id):
 
 		# Checks what type of button called the function and calls the correspoding method.
@@ -41,7 +42,7 @@ class Calculation:
 
 	# Adds the user input to the self.building_number as a string for easy management
 	def number_call(self, id):
-		self.building_number += str(id)
+		self.building_number.append(str(id))
 		self.allow_operation = True
 
 	# Manages operations
@@ -70,20 +71,27 @@ class Calculation:
 	
 	# Method for functionality button call
 	def functionality_call(self, id):
+		if (Functionality(id) == Functionality.EQUALS):
+			self.operation_call(int(Operation.ADD))
+		elif (Functionality(id) == Functionality.DELETE):
+			self.building_number.pop()
+		elif (Functionality(id) == Functionality.CLEAR):
+			self.reset()
+
+
 		self.operation_call(1)
 		result = self.result
-		self.reset()
 	
 	# Finishes the building number and sets the current number as a float value.
 	def wrapper(self):
-		self.current_number = float(self.building_number)
-		self.building_number = ""
+		self.current_number = float("".join(self.building_number))
+		self.building_number = []
 
 	# Resets all the values of the class
 	def reset(self):
 		self.result = 0.0
 		self.current_number = 0.0
-		self.building_number = ""
+		self.building_number = []
 		self.current_operation = Operation.ADD
 
 		print("RESET")
@@ -109,4 +117,4 @@ class Calculation:
 		self.result **= (1 / self.current_number)
 
 	def output_update(self):
-		return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + str(self.building_number))
+		return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + str("".join(self.building_number)))
