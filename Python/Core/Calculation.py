@@ -23,30 +23,31 @@ class Calculation:
 
 		self.current_operation = Operation.ADD
 		self.allow_operation = False
+		self.first = True
 
 	# Externals functions call this one
 	def caller(self, type, id):
 
 		# Checks what type of button called the function and calls the correspoding method.
-		if type == Type.NUMBER:
+		if (type == Type.NUMBER):
 			print("num")
 			self.number_call(id)
-		elif type == Type.OPERATION and self.allow_operation:
+		elif (type == Type.OPERATION and self.allow_operation):
 			print("oper")
-			self.operation_call(id)
-		else:
+			self.operation_call(Operation(id))
+		elif (type == Type.FUNCTIONALITY):
 			print("func")
-			return self.functionality_call(id)
+			return self.functionality_call(Functionality(id))
 
-		return self.output_update()
+		return self.output_update(True)
 
-	# Adds the user input to the self.building_number as a string for easy management
+	# Adds the user input to the self.building_number
 	def number_call(self, id):
 		self.building_number.append(str(id))
 		self.allow_operation = True
 
 	# Manages operations
-	def operation_call(self, id):
+	def operation_call(self, type):
 		
 		# Wraps the user input
 		self.wrapper()
@@ -67,7 +68,7 @@ class Calculation:
 		elif (self.current_operation == Operation.RAD):
 			self.rad()
 
-		self.current_operation = Operation(id)
+		self.current_operation = type
 	
 	# Method for functionality button call
 	def functionality_call(self, id):
@@ -78,12 +79,12 @@ class Calculation:
 		elif (Functionality(id) == Functionality.CLEAR):
 			self.reset()
 
-
-		self.operation_call(1)
 		result = self.result
 	
+	# 
 	# Finishes the building number and sets the current number as a float value.
 	def wrapper(self):
+		self.first = False
 		self.current_number = float("".join(self.building_number))
 		self.building_number = []
 
@@ -108,6 +109,8 @@ class Calculation:
 		self.result *= self.current_number
 
 	def divi(self):
+		if (self.current_number == 0):
+			self.result = "Can't divide by zero"
 		self.result /= self.current_number
 	
 	def pow(self):
@@ -116,5 +119,20 @@ class Calculation:
 	def rad(self):
 		self.result **= (1 / self.current_number)
 
-	def output_update(self):
-		return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + str("".join(self.building_number)))
+	# If the user input is invalid for the given operation, this method is called
+	def error_handler(self, error):
+		self.reset()
+		self.output_update(False, error)
+
+	# Ouputs the state of the calculation. Can be a number or error message
+	def output_update(self, is_number, error = "None"):
+
+		# Numeric output
+		if (is_number):
+			num = "".join(self.building_number)
+			if (self.first):
+				return num
+			return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + num)
+		# Error
+		else:
+			return error
