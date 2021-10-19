@@ -15,13 +15,20 @@ from math import *
 class Calculation:
 	""" Everything related to calculation is inside here """
 	def __init__(self):
+		# Stored value from previous calculations
 		self.result = 0.0
+		# Value currently stored for calculation
 		self.operating_value = 0.0
+		# Number being currently input by the user
 		self.building_number = []
+		# N/A
 		self.expression = ""
 
-		self.current_operation = Operation.ADD
+		# Enum of the operation currently stored
+		self.current_operation = None
+		# Whether to allow the input of an operation
 		self.allow_operation = False
+		# Whether it's the first input of the cycle
 		self.first = True
 
 	def caller(self, type, id):
@@ -30,15 +37,13 @@ class Calculation:
 		# Checks what type of button called the function and calls the correspoding method.
 		if (type == Type.NUMBER):
 			print("num")
-			self.number_call(id)
+			return self.number_call(id)
 		elif (type == Type.OPERATION and self.allow_operation):
 			print("oper")
-			self.operation_call(Operation(id))
+			return self.operation_call(Operation(id))
 		elif (type == Type.FUNCTIONALITY):
 			print("func")
 			return self.functionality_call(Functionality(id))
-
-		return self.output_update(True)
 	
 	# Input types managers methods
 
@@ -46,27 +51,42 @@ class Calculation:
 		"""Adds the user input to the self.building_number"""
 		self.building_number.append(str(id))
 		self.allow_operation = True
+		return self.output_update(True)
 
 	def operation_call(self, type):
 		"""Manages operations"""
 		
 		self.allow_operation = False
 		self.calculate()
+
 		self.current_operation = type
+		return self.output_update(True)
 
 	def functionality_call(self, type):
 		"""Calls the respective functionality for the given id"""
 		if (type == Functionality.EQUALS):
-			self.calculate()
-			self.output_update(True)
+			self.equals()
+			print("equals")
+			
 		elif (type == Functionality.DELETE):
-			self.building_number.pop()
+			if (self.building_number.count > 0):
+				self.building_number.pop()
 		elif (type == Functionality.CLEAR):
 			self.reset()
 
-		result = self.result
+		return self.output_update(True)
 	
 	# Utility methods
+	
+	def equals(self):
+		self.calculate()
+		self.current_operation = None
+		self.output_update(True)
+
+		value = self.operating_value
+
+		self.reset()
+		self.result = value
 
 	def calculate(self):
 		"""The bare minimum code for an operation to be completed"""
@@ -138,10 +158,11 @@ class Calculation:
 
 		# Numeric output
 		if (is_number):
+			print("output num")
 			num = "".join(self.building_number)
 			if (self.first):
 				return num
-			return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + num)
+			return (str(self.result) + " " + (str(operation_sign()[self.current_operation]) + " " + num))
 		# Error
 		print("error")
 		return error
