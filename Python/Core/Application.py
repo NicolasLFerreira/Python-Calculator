@@ -9,10 +9,8 @@ from Enums.Type import Type
 
 from Misc.Signs import *
 
-# Main class for TKinter object generation
 class Application(Frame):
-    # inprocessing responds to liskov substitution SOLID principle.
-    # Application() will make method calls when input signals are sent
+    """Main class of the entire application"""
     def __init__(self, master=None, inprocessing=None, root=None):
         Frame.__init__(self, master)
 
@@ -52,8 +50,8 @@ class Application(Frame):
     # Element Creation #
     ####################    	
 
-    # Here is where all the buttons and other TKinter elements are created
     def generate_elements(self):
+        """Here is where all the buttons and other TKinter elements are created"""
         # Number buttons
         for id in range(1, 10):
             frow = self.formula(id, 3, True, 1)
@@ -109,31 +107,31 @@ class Application(Frame):
         btn.grid(row=frow, column=fcolumn)
         return btn
 
-    # For numeric buttons
     def button_number(self, id, frow, fcolumn):
+        """For numeric buttons"""
         btn = self.base_button(id, str(id), Type.NUMBER, frow, fcolumn)
         self.numbers[id] = btn
-    
-    # For operation buttons
+   
     def button_operations(self, id, frow, fcolumn):
+        """For operation buttons"""
         btn = self.base_button(id, self.operation_sign[Operation(id)], Type.OPERATION, frow, fcolumn)
         self.operations[id] = btn
 
-    # For functionality buttons.  E.g.  equals, delete, clear, etc...
     def button_functionality(self, id, frow, fcolumn):
+        """For functionality buttons.  E.g.  equals, delete, clear, etc..."""
         btn = self.base_button(id, self.functionality_sign[Operation(id)], Type.FUNCTIONALITY, frow, fcolumn)
         self.functionalities[id] = btn
 
-    # Calls the calculation caller method and calls the output display function
+    # 
     def button_call(self, type, id):
+        """Calls the calculation caller method and calls the output display function"""
         output = self.call.caller(type, id)
         self.change_text(output)
 
-    # Sets the display
     def change_text(self, output):
+        """Sets the display"""
         self.text.set(str(output))
 
-    # Method which calculates a position for which the button will be based on
-    # given parameters.
     def formula(self, id, factor, isRow=True, fix=0):
+        """Method which calculates a position for which the button will be based on given parameters"""
         return 4 - (fix + math.floor(abs(id - 1) / factor)) if isRow else fix + (id - 1) % factor

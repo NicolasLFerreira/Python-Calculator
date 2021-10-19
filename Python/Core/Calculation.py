@@ -13,11 +13,10 @@ from math import *
 # - Exponentiation
 # - Radiation #
 class Calculation:
-	""" Manages the object for the calculation """
+	""" Everything related to calculation is inside here """
 	def __init__(self):
-		
 		self.result = 0.0
-		self.current_number = 0.0
+		self.operating_value = 0.0
 		self.building_number = []
 		self.expression = ""
 
@@ -25,8 +24,8 @@ class Calculation:
 		self.allow_operation = False
 		self.first = True
 
-	# Externals functions call this one
 	def caller(self, type, id):
+		"""Entry point of the class"""
 
 		# Checks what type of button called the function and calls the correspoding method.
 		if (type == Type.NUMBER):
@@ -40,21 +39,38 @@ class Calculation:
 			return self.functionality_call(Functionality(id))
 
 		return self.output_update(True)
+	
+	# Input types managers methods
 
-	# Adds the user input to the self.building_number
 	def number_call(self, id):
+		"""Adds the user input to the self.building_number"""
 		self.building_number.append(str(id))
 		self.allow_operation = True
 
-	# Manages operations
 	def operation_call(self, type):
-		
-		# Wraps the user input
-		self.wrapper()
+		"""Manages operations"""
 		
 		self.allow_operation = False
+		self.calculate()
+		self.current_operation = type
 
-		# Calls the respective operation method
+	def functionality_call(self, type):
+		"""Calls the respective functionality for the given id"""
+		if (type == Functionality.EQUALS):
+			self.calculate()
+			self.output_update(True)
+		elif (type == Functionality.DELETE):
+			self.building_number.pop()
+		elif (type == Functionality.CLEAR):
+			self.reset()
+
+		result = self.result
+	
+	# Utility methods
+
+	def calculate(self):
+		"""The bare minimum code for an operation to be completed"""
+		self.wrapper()
 		if (self.current_operation == Operation.ADD):
 			self.sum()
 		elif (self.current_operation == Operation.SUB):
@@ -68,64 +84,57 @@ class Calculation:
 		elif (self.current_operation == Operation.RAD):
 			self.rad()
 
-		self.current_operation = type
-	
-	# Method for functionality button call
-	def functionality_call(self, id):
-		if (Functionality(id) == Functionality.EQUALS):
-			self.operation_call(int(Operation.ADD))
-		elif (Functionality(id) == Functionality.DELETE):
-			self.building_number.pop()
-		elif (Functionality(id) == Functionality.CLEAR):
-			self.reset()
-
-		result = self.result
-	
-	# 
-	# Finishes the building number and sets the current number as a float value.
 	def wrapper(self):
+		"""Converts the building_number value to float, pass it to the operating_value and resets the building_number"""
 		self.first = False
-		self.current_number = float("".join(self.building_number))
+		self.operating_value = float("".join(self.building_number))
 		self.building_number = []
-
-	# Resets all the values of the class
+		
 	def reset(self):
+		"""Sets the properties of the object back to the default values"""
 		self.result = 0.0
-		self.current_number = 0.0
+		self.operating_value = 0.0
 		self.building_number = []
+		self.expression = ""
+
 		self.current_operation = Operation.ADD
+		self.allow_operation = False
+		self.first = True
 
 		print("RESET")
 	
 	# Operations
 	
 	def sum(self):
-		self.result += self.current_number
+		self.result += self.operating_value
 
 	def sub(self):
-		self.result -= self.current_number
+		self.result -= self.operating_value
 
 	def mult(self):
-		self.result *= self.current_number
+		self.result *= self.operating_value
 
 	def divi(self):
-		if (self.current_number == 0):
-			self.result = "Can't divide by zero"
-		self.result /= self.current_number
+		# Error
+		if (self.operating_value == 0.0):
+			self.error_handler("Can't divide by zero")
+			return
+		# Calculate
+		self.result /= self.operating_value
 	
 	def pow(self):
-		self.result **= self.current_number
+		self.result **= self.operating_value
 
 	def rad(self):
-		self.result **= (1 / self.current_number)
+		self.result **= (1 / self.operating_value)
 
-	# If the user input is invalid for the given operation, this method is called
 	def error_handler(self, error):
-		self.reset()
+		"""This is called in case that the user's input is invalid for the given operation"""
 		self.output_update(False, error)
+		self.reset()
 
-	# Ouputs the state of the calculation. Can be a number or error message
-	def output_update(self, is_number, error = "None"):
+	def output_update(self, is_number, error = "Unknown error"):
+		"""Outputs the state of the calculation. Can be ea number or error message"""
 
 		# Numeric output
 		if (is_number):
@@ -134,5 +143,5 @@ class Calculation:
 				return num
 			return (str(self.result) + " " + str(operation_sign()[self.current_operation]) + " " + num)
 		# Error
-		else:
-			return error
+		print("error")
+		return error
