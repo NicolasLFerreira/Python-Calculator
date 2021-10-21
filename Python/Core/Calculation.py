@@ -34,16 +34,20 @@ class Calculation:
 	def caller(self, type, id):
 		"""Entry point of the class"""
 
+		output_data = None
+
 		# Checks what type of button called the function and calls the correspoding method.
 		if (type == Type.NUMBER):
 			print("num")
-			return self.number_call(id)
+			output_data = self.number_call(id)
 		elif (type == Type.OPERATION and self.allow_operation):
 			print("oper")
-			return self.operation_call(Operation(id))
+			output_data = self.operation_call(Operation(id))
 		elif (type == Type.FUNCTIONALITY):
 			print("func")
-			return self.functionality_call(Functionality(id))
+			output_data = self.functionality_call(Functionality(id))
+
+		return self.output_update(output_data)
 	
 	# Input types managers methods
 
@@ -51,7 +55,7 @@ class Calculation:
 		"""Adds the user input to the self.building_number"""
 		self.building_number.append(str(id))
 		self.allow_operation = True
-		return self.output_update(True)
+		return OutputData(is_number = True, first = self.first, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
 
 	def operation_call(self, type):
 		"""Manages operations"""
@@ -59,12 +63,13 @@ class Calculation:
 		self.allow_operation = False
 		self.calculate()
 		self.current_operation = type
-		return self.output_update(True)
+		return OutputData(is_number = True, first = self.first, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
+
 
 	def functionality_call(self, type):
 		"""Calls the respective functionality for the given id"""
 		if (type == Functionality.EQUALS and self.current_operation != None):
-			self.equals()
+			return self.equals()
 			print("equals")
 			
 		elif (type == Functionality.DELETE):
@@ -72,21 +77,20 @@ class Calculation:
 				self.building_number.pop()
 		elif (type == Functionality.CLEAR):
 			self.reset()
-
-		return self.output_update(True)
 	
 	# Utility methods
 	
 	def equals(self):
+		"""Performs only the calculation of the current expression and returns the result"""
 		self.calculate()
-		self.output_update(True)
-
 		
+		output_data = OutputData(is_number = True, first = self.first, result = self.result)
 
 		value = self.operating_value
-
 		self.reset()
 		self.result = value
+
+		return output_data
 
 	def calculate(self):
 		"""Performs the selected operation on both the self.result and self.current_value. self.rad() is a special case"""
@@ -163,17 +167,30 @@ class Calculation:
 			return "Unknown error"
 
 		# Numeric output
-		if (is_number):
+		if (output_data.is_number):
 			print("output num")
-			num = "".join(building_number)
-			if (current_operation == None or first):
-				return num
-			return (str(result) + " " + (str(operation_sign()[current_operation]) + " " + num))
+
+			# Safety measures to assure the output won't show "empty" things
+			oper = str(operation_sign()[output_data.current_operation]) if output_data.current_operation != None else None
+			num1 = str(output_data.result)
+			num2 = "".join(output_data.building_number) if output_data.building_number != [] else None
+
+			if (output_data.first):
+				return num2
+
+			elif (oper == None and num2 == None):
+				return output_data.result
+
+			elif (oper != None and num2 == None):
+				return (str(output_data.result) + " " + oper)
+
+
+			return ((str(output_data.result) + " ") if (output_data.result != 0.0 and not output_data.first) else "") + ((oper + " ") if oper != None else "") + (num2 if num2 != None else "")
 		# Error
 		print("Super Idol的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C的你 滴滴清纯的蒸馏水")
-		return error
+		return output_data.error
 
-class OutputData:
+class OutputData():
 	def __init__(self, is_number = True, first = True, current_operation = None, building_number = [], result = 0.0, error = "Unknown error"):
 		self.is_number = is_number
 		self.first = first
