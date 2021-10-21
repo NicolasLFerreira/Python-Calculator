@@ -58,13 +58,12 @@ class Calculation:
 		
 		self.allow_operation = False
 		self.calculate()
-
 		self.current_operation = type
 		return self.output_update(True)
 
 	def functionality_call(self, type):
 		"""Calls the respective functionality for the given id"""
-		if (type == Functionality.EQUALS):
+		if (type == Functionality.EQUALS and self.current_operation != None):
 			self.equals()
 			print("equals")
 			
@@ -80,8 +79,9 @@ class Calculation:
 	
 	def equals(self):
 		self.calculate()
-		self.current_operation = None
 		self.output_update(True)
+
+		
 
 		value = self.operating_value
 
@@ -89,7 +89,8 @@ class Calculation:
 		self.result = value
 
 	def calculate(self):
-		"""The bare minimum code for an operation to be completed"""
+		"""Performs the selected operation on both the self.result and self.current_value. self.rad() is a special case"""
+		
 		self.wrapper()
 		if (self.current_operation == Operation.ADD):
 			self.sum()
@@ -103,6 +104,8 @@ class Calculation:
 			self.pow()
 		elif (self.current_operation == Operation.RAD):
 			self.rad()
+		else:
+			self.result = self.operating_value
 
 	def wrapper(self):
 		"""Converts the building_number value to float, pass it to the operating_value and resets the building_number"""
@@ -117,11 +120,11 @@ class Calculation:
 		self.building_number = []
 		self.expression = ""
 
-		self.current_operation = Operation.ADD
+		self.current_operation = None
 		self.allow_operation = False
 		self.first = True
 
-		print("RESET")
+		print("reset")
 	
 	# Operations
 	
@@ -153,16 +156,28 @@ class Calculation:
 		self.output_update(False, error)
 		self.reset()
 
-	def output_update(self, is_number, error = "Unknown error"):
-		"""Outputs the state of the calculation. Can be ea number or error message"""
+	def output_update(self, output_data = None):
+		"""Outputs the state of the calculation. Can be a number or error message"""
+
+		if (output_data == None):
+			return "Unknown error"
 
 		# Numeric output
 		if (is_number):
 			print("output num")
-			num = "".join(self.building_number)
-			if (self.first):
+			num = "".join(building_number)
+			if (current_operation == None or first):
 				return num
-			return (str(self.result) + " " + (str(operation_sign()[self.current_operation]) + " " + num))
+			return (str(result) + " " + (str(operation_sign()[current_operation]) + " " + num))
 		# Error
-		print("error")
+		print("Super Idol的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C的你 滴滴清纯的蒸馏水")
 		return error
+
+class OutputData:
+	def __init__(self, is_number = True, first = True, current_operation = None, building_number = [], result = 0.0, error = "Unknown error"):
+		self.is_number = is_number
+		self.first = first
+		self.current_operation = current_operation
+		self.building_number = building_number
+		self.result = result
+		self.error = error
