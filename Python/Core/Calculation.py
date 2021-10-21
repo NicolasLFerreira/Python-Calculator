@@ -1,11 +1,13 @@
 from Enums.Functionality import Functionality
 from Enums.Operation import Operation
 from Enums.Type import Type
+from Core.OutputData import OutputData
+
 from Misc.Signs import *
 from math import *
 
 # All the calculation magic happens here
-# List of operations that can be performed: 
+# List of operations that can be performed:
 # - Summation
 # - Subtraction
 # - Multiplication
@@ -36,7 +38,8 @@ class Calculation:
 
 		output_data = None
 
-		# Checks what type of button called the function and calls the correspoding method.
+		# Checks what type of button called the function and calls the correspoding
+		# method.
 		if (type == Type.NUMBER):
 			print("num")
 			output_data = self.number_call(id)
@@ -89,6 +92,7 @@ class Calculation:
 		value = self.operating_value
 		self.reset()
 		self.result = value
+		self.first = False
 
 		return output_data
 
@@ -160,7 +164,7 @@ class Calculation:
 		self.output_update(False, error)
 		self.reset()
 
-	def output_update(self, output_data = None):
+	def output_update(self, output_data=None):
 		"""Outputs the state of the calculation. Can be a number or error message"""
 
 		if (output_data == None):
@@ -175,26 +179,19 @@ class Calculation:
 			num1 = str(output_data.result)
 			num2 = "".join(output_data.building_number) if output_data.building_number != [] else None
 
+			# Checks which output case it is
 			if (output_data.first):
 				return num2
 
 			elif (oper == None and num2 == None):
-				return output_data.result
+				return num1
 
 			elif (oper != None and num2 == None):
 				return (str(output_data.result) + " " + oper)
 
+			elif (oper != None and num2 != None and not output_data.first):
+				return num1 + " " + oper + " " + num2
 
-			return ((str(output_data.result) + " ") if (output_data.result != 0.0 and not output_data.first) else "") + ((oper + " ") if oper != None else "") + (num2 if num2 != None else "")
-		# Error
+		# Error output
 		print("Super Idol的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C的你 滴滴清纯的蒸馏水")
 		return output_data.error
-
-class OutputData():
-	def __init__(self, is_number = True, first = True, current_operation = None, building_number = [], result = 0.0, error = "Unknown error"):
-		self.is_number = is_number
-		self.first = first
-		self.current_operation = current_operation
-		self.building_number = building_number
-		self.result = result
-		self.error = error
