@@ -22,7 +22,9 @@ class Calculation:
 		# Value currently stored for calculation
 		self.operating_value = 0.0
 		# Number being currently input by the user
-		self.building_number = []
+		self.building_number = ['']
+		# If the current number is decimal or not
+		self.decimal = False
 		# N/A
 		self.expression = ""
 
@@ -75,15 +77,29 @@ class Calculation:
 		if (type == Functionality.EQUALS and self.current_operation != None):
 			return self.equals()
 			print("equals")
-			
-		elif (type == Functionality.DELETE):
-			if (self.building_number.count > 0):
-				self.building_number.pop()
+		# Resets the entire class
 		elif (type == Functionality.CLEAR):
 			self.reset()
-	
+		# Deletes the last element of the building_number list
+		elif (type == Functionality.DELETE):
+			if (len(self.building_number) > 1):
+				self.building_number.pop()
+		# Inverts the sign of the building_number
+		elif (type == Functionality.INVERT):
+			if (self.building_number[0] == ''):
+				self.building_number[0] = '-'
+			else:
+				self.building_number[0] = ''
+		# Makes the building number decimal
+		elif (type == Functionality.DEC):
+			if (not self.decimal):
+				self.building_number.append('.')
+				self.decimal = True
+
+		return OutputData(is_number = True, first = self.first, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
+
 	# Utility methods
-	
+
 	def equals(self):
 		"""Performs only the calculation of the current expression and returns the result"""
 		self.calculate()
@@ -103,7 +119,7 @@ class Calculation:
 
 	def parse(self):
 		"""Takes the self.result and parses it into a list"""
-		number = str(int(self.result))
+		number = str(float(self.result))
 		list_num = []
 
 		for x in number:
@@ -134,13 +150,15 @@ class Calculation:
 		"""Converts the building_number value to float, pass it to the operating_value and resets the building_number"""
 		self.first = False
 		self.operating_value = float("".join(self.building_number))
-		self.building_number = []
+		self.building_number = ['']
+		self.decimal = False
 		
 	def reset(self):
 		"""Sets the properties of the object back to the default values"""
 		self.result = 0.0
 		self.operating_value = 0.0
-		self.building_number = []
+		self.building_number = ['']
+		self.decimal = False
 		self.expression = ""
 
 		self.current_operation = None
