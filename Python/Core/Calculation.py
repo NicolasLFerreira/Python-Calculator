@@ -90,28 +90,38 @@ class Calculation:
 		output_data = OutputData(is_number = True, first = self.first, result = self.result)
 
 		value = self.operating_value
+		list = self.parse()
 		self.reset()
-		self.result = value
-		self.first = False
+		self.building_number = list
 
 		return output_data
 
+	def parse(self):
+		"""Takes the self.result and parses it into a list"""
+		number = str(int(self.result))
+		list_num = []
+
+		for x in number:
+		    list_num.append(x)
+		return list_num
+		
+
 	def calculate(self):
 		"""Performs the selected operation on both the self.result and self.current_value. self.rad() is a special case"""
-		
+
 		self.wrapper()
 		if (self.current_operation == Operation.ADD):
-			self.sum()
+			return self.sum()
 		elif (self.current_operation == Operation.SUB):
-			self.sub()
+			return self.sub()
 		elif (self.current_operation == Operation.MULT):
-			self.mult()
+			return self.mult()
 		elif (self.current_operation == Operation.DIVI):
-			self.divi()
+			return self.divi()
 		elif (self.current_operation == Operation.POW):
-			self.pow()
+			return self.pow()
 		elif (self.current_operation == Operation.RAD):
-			self.rad()
+			return self.rad()
 		else:
 			self.result = self.operating_value
 
@@ -138,48 +148,51 @@ class Calculation:
 	
 	def sum(self):
 		self.result += self.operating_value
+		return None
 
 	def sub(self):
 		self.result -= self.operating_value
+		return None
 
 	def mult(self):
 		self.result *= self.operating_value
+		return None
 
 	def divi(self):
 		# Error
 		if (self.operating_value == 0.0):
-			self.error_handler("Can't divide by zero")
-			return
+			return self.error_handler("Can't divide by zero")
 		# Calculate
 		self.result /= self.operating_value
 	
 	def pow(self):
 		self.result **= self.operating_value
+		return None
 
 	def rad(self):
 		self.result **= (1 / self.operating_value)
+		return None
 
 	def error_handler(self, error):
 		"""This is called in case that the user's input is invalid for the given operation"""
-		self.output_update(False, error)
+		return OutputData(is_number = False, error = error)
 		self.reset()
 
 	def output_update(self, output_data=None):
 		"""Outputs the state of the calculation. Can be a number or error message"""
 
 		if (output_data == None):
-			return "Unknown error"
+			return "No output data given"
 
 		# Numeric output
 		if (output_data.is_number):
 			print("output num")
 
-			# Safety measures to assure the output won't show "empty" things
+			# Checks the data and prints only the ones that are not empty
 			oper = str(operation_sign()[output_data.current_operation]) if output_data.current_operation != None else None
 			num1 = str(output_data.result)
 			num2 = "".join(output_data.building_number) if output_data.building_number != [] else None
 
-			# Checks which output case it is
 			if (output_data.first):
 				return num2
 
