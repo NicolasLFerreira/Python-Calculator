@@ -50,7 +50,8 @@ class Calculation:
 			print("func")
 			output_data = self.functionality_call(Functionality(id))
 
-		return self.output_update(output_data)
+		if (output_data != None):
+			return self.output_update(output_data)
 	
 	# Input types managers methods
 
@@ -86,13 +87,17 @@ class Calculation:
 	def equals(self):
 		"""Performs only the calculation of the current expression and returns the result"""
 		self.calculate()
-		
+
+		# Store the output data before it's reseted	
 		output_data = OutputData(is_number = True, first = self.first, result = self.result)
 
-		value = self.operating_value
+		# Converts the self.result to a list
 		list = self.parse()
 		self.reset()
+		
+		# Corrects some of the properties
 		self.building_number = list
+		self.allow_operation = True
 
 		return output_data
 
