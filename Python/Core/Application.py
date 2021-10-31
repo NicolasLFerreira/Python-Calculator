@@ -86,7 +86,7 @@ class Application(Frame):
     ####################
 
     # Base button method.  This serves in order to keep some pattern on how
-    # every type of button will behave              
+    # every type of button will behave
     # The parameters are:
     # - An ID for it to be distinguished
     # - A text which will be printed in the screen
@@ -94,11 +94,16 @@ class Application(Frame):
     # - The row
     # - The column
     def base_button(self, id, text, type, frow, fcolumn):
+        # Creates the instance of the button TKinter Element
         btn = Button(self.root)
+        
+        # The text of the button
         btn["text"] = text 
+        
+        # Call the button_call method
         btn["command"] = lambda: self.button_call(type, id)
 
-        # The scale factor of the button. This is used in order to change its
+        # The scale factor of the button.  This is used in order to change its
         # size and that of its contents.
         btn["height"] = int(self.height_base * self.scale_factor)
         btn["width"] = int(self.width_base * self.scale_factor)
@@ -122,14 +127,19 @@ class Application(Frame):
         btn = self.base_button(id, self.functionality_sign[Operation(id)], Type.FUNCTIONALITY, frow, fcolumn)
         self.functionalities[id] = btn
 
-    # 
+    ########
+    # Misc #
+    ########
+
     def button_call(self, type, id):
         """Calls the calculation caller method and calls the output display function"""
+
         output = self.call.caller(type, id)
         self.change_text(output)
 
     def change_text(self, output):
         """Sets the display"""
+        print("output:",output)
         self.text.set(str(output))
 
     def formula(self, id, factor, isRow=True, fix=0):
