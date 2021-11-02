@@ -74,7 +74,7 @@ class Calculation:
 		
 		# Appends the input to the list.
 		self.building_number.append(str(id))
-
+		
 		# Allows operations to be performed now that there isn't an empty number.
 		self.allow_operation = True
 
@@ -85,14 +85,14 @@ class Calculation:
 	def operation_call(self, type):
 		"""Manages operation calls."""
 
-		# Checks to see if it's a operation sign swap or new entry.
-		# If it's a new entry, first performs a calculation with the current information.
-
 		# Radiation operations are printed in a special way in the screen.
 		if (type == Operation.RAD):
 			self.rad_operation = True
 		else:
 			self.rad_operation = False
+
+		# Checks to see if it's a operation sign swap or new entry.
+		# If it's a new entry, first performs a calculation with the current information.
 
 		if (self.allow_operation):
 			self.allow_operation = False
@@ -121,6 +121,8 @@ class Calculation:
 			if (len(self.building_number) > 1):
 				if (self.building_number.pop() == '.'):
 					self.decimal = False
+			if (len(self.building_number) == 1):
+				self.allow_operation = False
 
 		# Inverts the sign of the building_number.
 		elif (type == Functionality.INVERT):
@@ -207,7 +209,6 @@ class Calculation:
 		self.building_number = ['']
 		self.decimal = False
 		self.expression = ""
-
 		self.current_operation = None
 		self.allow_operation = False
 		self.rad_operation = False
@@ -283,7 +284,7 @@ class Calculation:
 					if (num2 == bad_value):
 						return oper + " " + num1
 					else:
-						return num2 + " " + num1
+						return num2 + " " + oper + " " + num1
 
 			# Normally after a equals.
 			elif (oper == bad_value and num2 == bad_value):
