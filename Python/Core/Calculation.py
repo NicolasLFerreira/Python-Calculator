@@ -32,7 +32,7 @@ class Calculation:
 		# If the current number is decimal or not.
 		self.decimal = False
 
-		# Switch for radiation operations.
+		# Switch for radical operations.
 		self.rad_operation = False
 
 		# Enum of the operation currently stored.
@@ -48,6 +48,7 @@ class Calculation:
 
 	def caller(self, type, id):
 		"""Entry point of the class. External methods must call this."""
+
 
 		output_data = None
 
