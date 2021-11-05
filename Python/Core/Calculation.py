@@ -19,7 +19,7 @@ class Calculation:
 	
 	# Constructor.
 	def __init__(self):
-
+		"""Constructor."""
 		# Stored value from previous calculations.
 		self.result = 0.0
 
@@ -45,10 +45,8 @@ class Calculation:
 		self.first = True
 
 	# Entry method.
-
 	def caller(self, type, id):
 		"""Entry point of the class. External methods must call this."""
-
 
 		output_data = None
 
@@ -86,6 +84,10 @@ class Calculation:
 	def operation_call(self, type):
 		"""Manages operation calls."""
 
+		# Stops the methods if it's a radical with a negative number.
+		if (type == Operation.RAD and self.building_number[0] == '-'):
+			return OutputData(is_number = True, first = self.first, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
+		
 		# Radiation operations are printed in a special way in the screen.
 		if (type == Operation.RAD):
 			self.rad_operation = True
@@ -108,6 +110,9 @@ class Calculation:
 	def functionality_call(self, type):
 		"""Manages functionality calls."""
 
+		# Declares the output value as a variable so that it can be changed by something in a specific case.
+		output = OutputData(is_number = True, first = self.first, rad_operation = self.rad_operation, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
+
 		# Performs a calculation and returns outputs the result.
 		if (type == Functionality.EQUALS and self.current_operation != None):
 			return self.equals()
@@ -116,6 +121,9 @@ class Calculation:
 		# Simply resets the entries.
 		elif (type == Functionality.CLEAR):
 			self.reset()
+
+			# Special output so that it doesn't print an error in the screen. Comment it out and see what happens.
+			output = OutputData(is_number = True, first = True)
 
 		# Deletes the last element of the building_number list, or performs nothing if it's empty.
 		elif (type == Functionality.DELETE):
@@ -135,13 +143,15 @@ class Calculation:
 		# Stars the decimal houses in the current number.
 		elif (type == Functionality.DEC):
 			if (not self.decimal):
+				print("LENGTH: " + str(len(self.building_number)))
+				print(str(self.building_number))
 				if (len(self.building_number) == 1):
 					self.building_number.append('0')
 				self.building_number.append('.')
 				self.decimal = True
 				
 		# Output.
-		return OutputData(is_number = True, first = self.first, rad_operation = self.rad_operation, current_operation = self.current_operation, building_number = self.building_number, result = self.result)
+		return output
 
 	# Utility methods.
 
@@ -172,8 +182,11 @@ class Calculation:
 	def parse(self):
 		"""Takes the self.result and parses it into a list."""
 		number = str(float(self.result))
-		list_num = ['']
+	
+		# Starts the variable with a lambda to check what condition is being dealt with.
+		list_num = [] if (number[0] == "-") else [""]
 
+		# Parses the list.
 		for x in number:
 		    list_num.append(x)
 		return list_num
@@ -183,6 +196,8 @@ class Calculation:
 		"""Performs the selected operation on both the self.result and self.current_value. self.rad() is a special case."""
 
 		self.wrapper()
+
+		# Call the operations if certain conditions are met.
 		if (self.current_operation == Operation.ADD):
 			self.sum()
 		elif (self.current_operation == Operation.SUB):
@@ -207,6 +222,7 @@ class Calculation:
 		
 	def reset(self):
 		"""Sets the properties of the object back to the default values."""
+
 		self.result = 0.0
 		self.operating_value = 0.0
 		self.building_number = ['']
@@ -279,6 +295,7 @@ class Calculation:
 
 			# Lots of if checks to see what output scenario this is, so to avoid having blank data on the screen.
 			# First time that something is being inputted.
+			
 			if (output_data.first):
 				return num2
 
