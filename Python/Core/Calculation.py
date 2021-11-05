@@ -135,6 +135,8 @@ class Calculation:
 		# Stars the decimal houses in the current number.
 		elif (type == Functionality.DEC):
 			if (not self.decimal):
+				if (len(self.building_number) == 1):
+					self.building_number.append('0')
 				self.building_number.append('.')
 				self.decimal = True
 				
