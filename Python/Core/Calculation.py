@@ -13,7 +13,7 @@ from math import *
 # - Multiplication
 # - Division
 # - Exponentiation
-# - Radiation #
+# - Rooting
 class Calculation:
 	""" Everything related to calculation is inside here """
 	
