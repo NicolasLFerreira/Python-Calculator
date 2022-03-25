@@ -9,7 +9,6 @@ from enum import *
 # Top level widget
 root = Tk()
 
-
 # Main function. Assembles the code together
 def main():
 

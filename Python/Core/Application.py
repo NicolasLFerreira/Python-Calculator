@@ -79,8 +79,6 @@ class Application(Frame):
         self.label = Label(self.root, textvariable=self.text, font=("Helvetic", int(self.font_base * self.scale_factor), "bold"), width=int(self.width_base * self.scale_factor * 4))
         self.label.grid(row=0, columnspan=4)
         
-
-
     ####################
     # Tkinter Elements #
     ####################
